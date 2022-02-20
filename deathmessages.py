@@ -2,10 +2,8 @@ import requests
 import json
 import sys
 import os
+import config
 from zipfile import ZipFile
-
-#change this to whatever version of MC your server is running
-version = "1.16.5"
 
 #downloads a file
 def download(url, path):
@@ -34,7 +32,7 @@ def get_server_jar(version_id):
 #extracts en_us.json from a server jar
 def extract_lang_file(jar_path):
     if not os.path.exists(jar_path):
-        get_server_jar(version)
+        get_server_jar(config.version)
     with ZipFile(jar_path, "r") as zip_file:
         filenames = zip_file.namelist()
         for filename in filenames:
