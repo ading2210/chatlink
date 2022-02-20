@@ -2,9 +2,11 @@
 #--------------------------------------------
 #mc version (change this)
 version = "1.16.5"
+#location of the mc server log file (change this)
+log_file = "~/server/logs/latest.log"
 
 #discord webhook config
-webhook_url = "webhook goes here"
+webhook_url = "discord webhook url goes here"
 discord_nickname = "Chatlink"
 
 #chat messages

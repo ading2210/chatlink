@@ -7,6 +7,7 @@ import config
 
 #compile regex patterns
 def compile_regex():
+    print("Fetching a list of death messages...")
     death_messages = deathmessages.get_death_messages()
     death_messages_regex = []
     placeholder1 = re.escape("%1$s")
@@ -49,7 +50,7 @@ def tail(filename, logdir):
     f.close()
 
 def main(death_messages_regex):
-    for line in tail("logs/latest.log", "logs"):
+    for line in tail(config.log_file, os.path.dirname(config.log_file)):
         line_stripped = re.sub(r"(\[[0-9][0-9]:[0-9][0-9]:[0-9][0-9]])", "", line, count=1).lstrip()
         if not "[Server thread/INFO]:" in line_stripped:
             continue
@@ -133,5 +134,7 @@ def main(death_messages_regex):
             r = requests.post(config.webhook_url, json=data)
 
 if __name__ == "__main__":
+    print("Compiling regex patterns...")
     regex_patterns = compile_regex()
+    print("Starting the program...")
     main(regex_patterns)

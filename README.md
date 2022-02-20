@@ -10,6 +10,5 @@
 ### Setup:
 (Note: This has only been tested on Linux)
 1. Cd into your server's directory and clone this repository.
-2. Edit chatlink.py and add a Discord webhook URL.
-3. Edit deathmessages.py and change the MC version to whatever version of MC your server is running.
+2. Edit config.py and add a Discord webhook URL. ALso edit the MC version and edit the location of the MC server's log file.
 4. Run `python3 chatlink.py` to start the program
