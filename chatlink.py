@@ -95,28 +95,22 @@ def main(death_messages_regex):
             text = server_stop_message
 
         #check for advancements
-        if "has made the advancement" in line_formatted:
+        if re.match(r"^[a-zA-Z0-9_]+ has made the advancement \[.+\]$", line_formatted):
             line_split_re = re.split(r"\[(.*?)\]", line_formatted)
             player_string = line_split_re[0]
             player_string_split = player_string.split(" ", 1)
-            if not player_string_split[1].strip() == "has made the advancement":
-                continue
             advancement = line_split_re[1]
             text = config.advancement_message.format(player=player_string_split[0], advancement=advancement)
-        elif "has reached the goal" in line_formatted:
+        elif re.match(r"^[a-zA-Z0-9_]+ has reached the goal \[.+\]$", line_formatted):
             line_split_re = re.split(r"\[(.*?)\]", line_formatted)
             player_string = line_split_re[0]
             player_string_split = player_string.split(" ", 1)
-            if not player_string_split[1].strip() == "has reached the goal":
-                continue
             advancement = line_split_re[1]
             text = config.goal_message.format(player=player_string_split[0], advancement=advancement)
-        elif "has completed the challenge" in line_formatted:
+        elif re.match(r"^[a-zA-Z0-9_]+ has completed the challenge \[.+\]$", line_formatted):
             line_split_re = re.split(r"\[(.*?)\]", line_formatted)
             player_string = line_split_re[0]
             player_string_split = player_string.split(" ", 1)
-            if not player_string_split[1].strip() == "has completed the challenge":
-                continue
             advancement = line_split_re[1]
             text = config.challenge_message.format(player=player_string_split[0], advancement=advancement)
 
