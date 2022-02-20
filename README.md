@@ -10,5 +10,5 @@
 ### Setup:
 (Note: This has only been tested on Linux)
 1. Cd into your server's directory and clone this repository.
-2. Edit config.py and add a Discord webhook URL. ALso edit the MC version and edit the location of the MC server's log file.
-4. Run `python3 chatlink.py` to start the program
+2. Edit config.py and add a Discord webhook URL. Also edit the MC version and edit the location of the MC server's log file (needs to be an absolute path).
+4. Run `python3 chatlink.py` to start the program.
