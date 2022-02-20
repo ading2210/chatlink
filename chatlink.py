@@ -89,7 +89,7 @@ def main(death_messages_regex):
                 text = config.player_join_message.format(player=player)
 
         #check for server start/stop
-        if line_formatted.startswith("Done"):
+        if re.match(r'^Done \(.+\)! For help, type "help"$', line_formatted):
             text = config.server_start_message
         elif line_formatted == "Stopping server":
             text = config.server_stop_message
