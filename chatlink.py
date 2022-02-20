@@ -81,18 +81,18 @@ def main(death_messages_regex):
             text = config.slash_say_message.format(player=player, chatmsg=chatmsg)
 
         #check for player join/leave
-        if re.match(r"^[a-zA-Z0-9_]+ left the game", line_formatted):
+        if re.match(r"^[a-zA-Z0-9_]+ left the game$", line_formatted):
                 player = line_split[0]
                 text = config.player_leave_message.format(player=player)
-        elif re.match(r"^[a-zA-Z0-9_]+ joined the game", line_formatted):
+        elif re.match(r"^[a-zA-Z0-9_]+ joined the game$", line_formatted):
                 player = line_split[0]
                 text = config.player_join_message.format(player=player)
 
         #check for server start/stop
         if line_formatted.startswith("Done"):
-            text = server_start_message
+            text = config.server_start_message
         elif line_formatted == "Stopping server":
-            text = server_stop_message
+            text = config.server_stop_message
 
         #check for advancements
         if re.match(r"^[a-zA-Z0-9_]+ has made the advancement \[.+\]$", line_formatted):
