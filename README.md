@@ -2,9 +2,10 @@
 
 ### Features:
  - Theoretically compatible with any MC server software (1.12 and above), no plugin required.
+ - Completely seperate from the MC server.
  - Tracks when players join/leave, send chat messages, get achievements, and when they die.
  - Can detect when the server starts or stops.
- - Will only read the server log.
+ - Will only read info from the server log.
 
 ### Setup:
 (Note: This has only been tested on Linux)
