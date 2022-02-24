@@ -18,7 +18,7 @@ discord_nickname = "Chatlink"
 #--------------------------------------------
 
 #discord bot config
-bot_token = "Nzc2Mjk3MDExNDEwMTA4NDQ3.X6y07g.Db_0WYkska90SWptuUB2RWr8eWA" 
+bot_token = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" 
 bot_channel_id = 776294866413682718 #channel id of the channel you want to link to the mc chat
 discord_to_mc_message = "[§bDiscord§r] [{user}] {message}"
 discord_ignore_bots = True
