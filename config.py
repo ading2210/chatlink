@@ -18,9 +18,9 @@ discord_nickname = "Chatlink"
 #--------------------------------------------
 
 #discord bot config
-bot_token = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" 
+bot_token = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 bot_channel_id = 776294866413682718 #channel id of the channel you want to link to the mc chat
-discord_to_mc_message = "[§bDiscord§r] [{user}] {message}"
+discord_to_mc_message = "[§bDiscord§r] [{user}] {message}" #message from discord that is sent to the mc chat
 discord_ignore_bots = True
 
 #rcon config
@@ -31,7 +31,7 @@ rcon_password = "password"
 #--------------------------------------------
 
 #messages config:
-#these placeholders cannot be removed or else there will be an error
+#these are the messages that are displayed in discord
 
 #chat messages
 player_message = "{player} » {chatmsg}"
