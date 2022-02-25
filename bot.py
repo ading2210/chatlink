@@ -9,17 +9,12 @@ import chatlink
 import config
 import rcon
 
-#executes a command in the server
-def execute_command(rcon, cmd):
-    rcon.send_cmd(cmd)
-
-#bot = commands.Bot(command_prefix="!", help_command=None)
-
 class BotClient(discord.Client):
     def __init__(self, *args, **kwargs):
         self.chatlink_object = chatlink.Chatlink()
         super().__init__(*args, **kwargs)
         self.thread = threading.Thread(target=self.thread_function, daemon=True)
+        self.loop = asyncio.get_event_loop()
         
         rcon_split = config.rcon_address.split(":")
         rcon_ip = rcon_split[0]
@@ -33,7 +28,6 @@ class BotClient(discord.Client):
                                                                  channelid=channel.id))
         for text in self.chatlink_object.main():
             print("MC -> Discord: "+text)
-            #asyncio.run(channel.send(text))
             asyncio.run_coroutine_threadsafe(channel.send(text), self.loop)
 
     #runs when bot is initalized
@@ -45,7 +39,7 @@ class BotClient(discord.Client):
     async def on_message(self, message):
         if message.author.id == self.user.id:
             return
-        elif message.author.bot:
+        elif message.author.bot and config.discord_ignore_bots:
             return
         if message.channel.id == config.bot_channel_id:
             nickname = message.author.display_name
@@ -53,7 +47,7 @@ class BotClient(discord.Client):
             message_escaped = message_escaped.replace("'", "\\'")
             message_formatted = config.discord_to_mc_message.format(message=message_escaped, user=nickname)
             command = 'tellraw @a "{msg}"'.format(msg=message_formatted)
-            execute_command(self.rcon, command)
+            self.rcon.send_cmd(command)
             print("Discord -> MC: " + message_formatted)
 
 if __name__ == "__main__":

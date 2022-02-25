@@ -8,6 +8,11 @@ import config
 class Chatlink():
     def __init__(self):
         self.death_messages_regex = self.compile_regex()
+        self.advancements_regex = {
+            r"^[a-zA-Z0-9_]+ has made the advancement \[.+\]$": config.advancement_message,
+            r"^[a-zA-Z0-9_]+ has reached the goal \[.+\]$": config.goal_message,
+            r"^[a-zA-Z0-9_]+ has completed the challenge \[.+\]$": config.challenge_message
+        }
         self.stop = False
         
     #compile regex patterns
@@ -65,14 +70,13 @@ class Chatlink():
                 continue
             line_split = line_formatted.split(" ")
 
-            text = ""
             #check for player message
             if re.match(r"^<[a-zA-Z0-9_]+> .+$", line_formatted):
                 if line_formatted.startswith("<--[HERE]"):
                     continue
                 player = re.findall(r"<(.*?)>", line_formatted)[0]
                 chatmsg = line_formatted.replace("<{player}> ".format(player=player), "", 1)
-                text = config.player_message.format(player=player, chatmsg=chatmsg)
+                yield config.player_message.format(player=player, chatmsg=chatmsg); continue
             #check for message sent by /say
             elif re.match(r"^\[[a-zA-Z0-9_]+\] .+$", line_formatted):
                 findall = re.findall(r"\[(.*?)\]", line_formatted)
@@ -84,53 +88,36 @@ class Chatlink():
                 elif " " in player:
                     continue
                 chatmsg = line_formatted.replace("[{player}] ".format(player=player), "", 1)
-                text = config.slash_say_message.format(player=player, chatmsg=chatmsg)
+                yield config.slash_say_message.format(player=player, chatmsg=chatmsg); continue
 
             #check for player join/leave
             if re.match(r"^[a-zA-Z0-9_]+ left the game$", line_formatted):
                     player = line_split[0]
-                    text = config.player_leave_message.format(player=player)
+                    yield config.player_leave_message.format(player=player); continue
             elif re.match(r"^[a-zA-Z0-9_]+ joined the game$", line_formatted):
                     player = line_split[0]
-                    text = config.player_join_message.format(player=player)
+                    yield config.player_join_message.format(player=player); continue
 
             #check for server start/stop
             if re.match(r'^Done \(.+\)! For help, type "help"$', line_formatted):
-                text = config.server_start_message
+                yield config.server_start_message; continue
             elif line_formatted == "Stopping server":
-                text = config.server_stop_message
+                yield config.server_stop_message; continue
 
             #check for advancements
-            if re.match(r"^[a-zA-Z0-9_]+ has made the advancement \[.+\]$", line_formatted):
-                line_split_re = re.split(r"\[(.*?)\]", line_formatted)
-                player_string = line_split_re[0]
-                player_string_split = player_string.split(" ", 1)
-                advancement = line_split_re[1]
-                text = config.advancement_message.format(player=player_string_split[0], advancement=advancement)
-            elif re.match(r"^[a-zA-Z0-9_]+ has reached the goal \[.+\]$", line_formatted):
-                line_split_re = re.split(r"\[(.*?)\]", line_formatted)
-                player_string = line_split_re[0]
-                player_string_split = player_string.split(" ", 1)
-                advancement = line_split_re[1]
-                text = config.goal_message.format(player=player_string_split[0], advancement=advancement)
-            elif re.match(r"^[a-zA-Z0-9_]+ has completed the challenge \[.+\]$", line_formatted):
-                line_split_re = re.split(r"\[(.*?)\]", line_formatted)
-                player_string = line_split_re[0]
-                player_string_split = player_string.split(" ", 1)
-                advancement = line_split_re[1]
-                text = config.challenge_message.format(player=player_string_split[0], advancement=advancement)
-
+            for regex in self.advancements_regex:
+                if re.match(regex, line_formatted):
+                    message = self.advancements_regex[regex]
+                    line_split_re = re.split(r"\[(.*?)\]", line_formatted)
+                    player_string = line_split_re[0]
+                    player_string_split = player_string.split(" ", 1)
+                    advancement = line_split_re[1]
+                    yield message.format(player=player_string_split[0], advancement=advancement); continue
+                    
             #check for death messages
             for regex in self.death_messages_regex:
                 if not regex.search(line_formatted) == None:
-                    text = config.death_message.format(deathmsg=line_formatted)
-                    
-            if not text == "":
-                if config.webhook == True:
-                    
-                    yield text
-                elif config.webhook == False:
-                    yield text
+                    yield config.death_message.format(deathmsg=line_formatted); continue
 
 if __name__ == "__main__":
     if config.webhook == True:
