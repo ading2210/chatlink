@@ -43,9 +43,7 @@ class BotClient(discord.Client):
             return
         if message.channel.id == config.bot_channel_id:
             nickname = message.author.display_name
-            message_escaped = message.content.replace('"', '\\"')
-            message_escaped = message_escaped.replace("'", "\\'")
-            message_formatted = config.discord_to_mc_message.format(message=message_escaped, user=nickname)
+            message_formatted = config.discord_to_mc_message.format(message=message.content, user=nickname).replace("'", r"\'").replace('"', r'\"')
             command = 'tellraw @a "{msg}"'.format(msg=message_formatted)
             self.rcon.send_cmd(command)
             print("Discord -> MC: " + message_formatted)

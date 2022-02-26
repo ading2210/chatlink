@@ -53,9 +53,8 @@ class Chatlink():
                 except KeyboardInterrupt:
                     print("quitting...")
                     break
-                continue
-
-            yield newline
+            else:
+                yield newline
         f.close()
 
     def main(self):
@@ -117,7 +116,7 @@ class Chatlink():
             #check for death messages
             for regex in self.death_messages_regex:
                 if not regex.search(line_formatted) == None:
-                    yield config.death_message.format(deathmsg=line_formatted); continue
+                    yield config.death_message.format(deathmsg=line_formatted); break
 
 if __name__ == "__main__":
     if config.webhook == True:
