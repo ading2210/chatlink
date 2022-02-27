@@ -48,6 +48,17 @@ class RCON:
         self.sock.settimeout(10)
         self.sock.connect((host, port))
         self.password = password
+        self.host = host
+        self.port = port
+        self.login()
+
+    #reconnect in case of a server restart
+    def reconnect(self):
+        self.sock.close()
+        del self.sock
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.sock.settimeout(10)
+        self.sock.connect((self.host, self.port))
         self.login()
 
     #close the connection

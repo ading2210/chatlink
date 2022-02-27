@@ -3,7 +3,7 @@ import asyncio
 from discord.ext import commands
 import threading
 import os
-import subprocess
+import struct
 
 import chatlink
 import config
@@ -45,7 +45,17 @@ class BotClient(discord.Client):
             nickname = message.author.display_name
             message_formatted = config.discord_to_mc_message.format(message=message.content, user=nickname).replace("'", r"\'").replace('"', r'\"')
             command = 'tellraw @a "{msg}"'.format(msg=message_formatted)
-            self.rcon.send_cmd(command)
+            try:
+                self.rcon.send_cmd(command)
+            except (BrokenPipeError, struct.error) as e:
+                #error handling in case the server restarts
+                print("Attempting to reconnect to the RCON server...")
+                try:
+                    self.rcon.reconnect()
+                    self.rcon.send_cmd(command)
+                    print("Reconnection successful!")
+                except ConnectionRefusedError:
+                    print("Connection has been refused. Either the server is still starting or RCON is not enabled.")
             print("Discord -> MC: " + message_formatted)
 
 if __name__ == "__main__":
