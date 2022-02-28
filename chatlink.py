@@ -2,7 +2,7 @@ import time
 import os
 import requests
 import re
-import deathmessages
+from utils import deathmessages
 import config
 
 class Chatlink():

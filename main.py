@@ -1,6 +1,7 @@
 import chatlink
 import bot
 import config
+from commands import Commands
 
 if config.webhook == True:
     chatlink_object = chatlink.Chatlink()
@@ -12,6 +13,8 @@ if config.webhook == True:
         }
         r = requests.post(config.webhook_url, json=data)
 else:
-    client = bot.BotClient()
+    client = bot.BotClient(command_prefix=config.command_prefix,
+                           help_command=None)
+    client.add_cog(Commands(client))
     print("Starting the bot...")
     client.run(config.bot_token)

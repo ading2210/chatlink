@@ -1,15 +1,15 @@
 import discord
 import asyncio
-from discord.ext import commands
 import threading
 import os
 import struct
 
 import chatlink
 import config
-import rcon
+from discord.ext import commands
+from utils import rcon
 
-class BotClient(discord.Client):
+class BotClient(commands.Bot):
     def __init__(self, *args, **kwargs):
         self.chatlink_object = chatlink.Chatlink()
         super().__init__(*args, **kwargs)
@@ -24,7 +24,7 @@ class BotClient(discord.Client):
     #thread to watch the log file
     def thread_function(self):
         channel = self.get_channel(config.bot_channel_id)
-        print("Linked to channel #{channel} ({channelid})".format(channel=channel.name,
+        print("Chat linked to channel #{channel} ({channelid})".format(channel=channel.name,
                                                                  channelid=channel.id))
         for text in self.chatlink_object.main():
             print("MC -> Discord: "+text)
@@ -34,12 +34,20 @@ class BotClient(discord.Client):
     async def on_ready(self):
         print(f'Bot connected as {self.user}')
         self.thread.start()
+        if config.console_channel == True:
+            console_channel = self.get_channel(config.console_channel_id)
+            print("Console linked to channel #{channel} ({channelid})".format(channel=console_channel.name,
+                                                                 channelid=console_channel.id))
 
     #checks for messages in the discord channel
     async def on_message(self, message):
         if message.author.id == self.user.id:
             return
         elif message.author.bot and config.discord_ignore_bots:
+            return
+        await self.process_commands(message)
+
+        if message.content.startswith(config.command_prefix):
             return
         if message.channel.id == config.bot_channel_id:
             nickname = message.author.display_name
@@ -57,11 +65,4 @@ class BotClient(discord.Client):
                 except ConnectionRefusedError:
                     print("Connection has been refused. Either the server is still starting or RCON is not enabled.")
             print("Discord -> MC: " + message_formatted)
-
-if __name__ == "__main__":
-    try:
-        client = BotClient()
-        print("Starting the bot...")
-        client.run(config.bot_token)
-    except KeyboardInterrupt:
-        print("exiting")
+            

@@ -18,15 +18,58 @@ discord_nickname = "Chatlink"
 #--------------------------------------------
 
 #discord bot config
-bot_token = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+bot_token = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 bot_channel_id = 776294866413682718 #channel id of the channel you want to link to the mc chat
-discord_to_mc_message = "[§bDiscord§r] [{user}] {message}" #message from discord that is sent to the mc chat
+discord_to_mc_message = "§b[Discord]§r {user} » {message}" #message from discord that is sent to the mc chat
 discord_ignore_bots = True
+command_prefix = "!"
+console_channel = False
+console_channel_id = 947707312787841064
 
 #rcon config
 #you can find the port and password of the rcon server in server.properties
 rcon_address = "127.0.0.1:25575"
 rcon_password = "password"
+
+#query config
+#again, you can find the address and port in server.properties
+query_address = "127.0.0.1:25565"
+
+#--------------------------------------------
+
+#commands config:
+#these are the outputs of the commands that are run from discord
+
+#help command:
+help_message = """
+**Command List:**
+ - `{pre}players` - Lists the online players
+ - `{pre}stats` - Gets various stats about the server
+ - `{pre}run [cmd]` - Run a command in the server (only available to users with access to the configured server console channel)
+ - `{pre}help` - Shows this message
+""".lstrip().strip().format(pre=command_prefix)
+
+#player list commands
+player_list_heading = "**{players}/{maxplayers} players connected:**"
+player_list_items = " - {player}"
+
+#stats command
+stats_output = """
+**Server Stats:**
+Players: `{players}/{maxplayers}`
+Map name: `{mapname}`
+Port: `{server_port}`
+MOTD:
+```{motd}```
+""".lstrip().strip()
+
+#run command
+run_output = """
+Command output:
+```
+{output}
+```
+"""
 
 #--------------------------------------------
 
