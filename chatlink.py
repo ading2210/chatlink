@@ -82,7 +82,7 @@ class Chatlink():
                 if not len(findall) > 0:
                     continue
                 player = findall[0]
-                if player == "Dynmap":
+                if player in config.blacklisted_users:
                     continue
                 elif " " in player:
                     continue

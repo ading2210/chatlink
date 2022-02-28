@@ -8,6 +8,12 @@ server_dir = "/home/allen/smp3/"
 #these defaults shouldn't need to be changed
 log_file = server_dir + "/logs/latest.log"
 
+#often server plugins will use "[PluginName] message" to log messages
+#this results in false positives for the /say detection,
+#since /say results in the output [player] message
+#anything put in this list will not trigger the /say detection
+blacklisted_users = ["Dynmap"] #"[Dynmap] something" will not trigger the /say detection
+
 #--------------------------------------------
 
 #discord webhook config
