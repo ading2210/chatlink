@@ -21,10 +21,10 @@ discord_nickname = "Chatlink"
 bot_token = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 bot_channel_id = 776294866413682718 #channel id of the channel you want to link to the mc chat
 discord_to_mc_message = "§b[Discord]§r {user} » {message}" #message from discord that is sent to the mc chat
-discord_ignore_bots = True
-command_prefix = "!"
-console_channel = False
-console_channel_id = 947707312787841064
+discord_ignore_bots = True #ignore bots in linked channel?
+command_prefix = "!" #command prefix for the bot
+console_channel = False #enable/disable the console channel
+console_channel_id = 947707312787841064 #channel id of the optional console channel
 
 #rcon config
 #you can find the port and password of the rcon server in server.properties
@@ -69,7 +69,7 @@ Command output:
 ```
 {output}
 ```
-"""
+""".lstrip().strip()
 
 #--------------------------------------------
 
