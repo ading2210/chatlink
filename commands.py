@@ -24,7 +24,7 @@ class Commands(commands.Cog, name="commands module"):
     async def stats(self, ctx):
         stats = self.client.query.full_stat()
         players = stats.pop("players")
-        response = config.stats_output.format(**stats)
+        response = config.stats_output.format(**stats).lstrip().strip()
         await ctx.send(response)
 
     #command to run a command in mc
@@ -50,11 +50,11 @@ class Commands(commands.Cog, name="commands module"):
 
         if response == "":
             response = "The command was executed successfully but the response from the server was empty."
-        max_length = 2000-len(config.run_output)
+        max_length = 2000-len(config.run_output.lstrip().strip())
         msg = config.run_output.format(output=textwrap.shorten(response, width=max_length)) 
         
         await ctx.send(msg)
 
     @commands.command(name="help")
     async def help(self, ctx):
-        await ctx.send(config.help_message)
+        await ctx.send(config.help_message.format(pre=command_prefix).lstrip().strip())

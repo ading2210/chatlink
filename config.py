@@ -37,7 +37,9 @@ console_channel_id = 947707312787841064 #channel id of the optional console chan
 
 #set a custom status
 #valid placeholders are motd, gametype, map, numplayers, hostport, hostip
+#valid status types are playing, streaming, listening, watching, and competing
 custom_status = True
+custom_status_type = "playing"
 custom_status_message = "with {numplayers}/{maxplayers} players" #will display as "playing with x/y players"
 
 
@@ -63,7 +65,7 @@ help_message = """
  - `{pre}stats` - Gets various stats about the server
  - `{pre}run [cmd]` - Run a command in the server (only available to users with access to the configured server console channel)
  - `{pre}help` - Shows this message
-""".lstrip().strip().format(pre=command_prefix)
+"""
 
 #player list commands
 player_list_heading = "**{players}/{maxplayers} players connected:**"
@@ -80,7 +82,7 @@ Port: `{hostport}`
 Version: `{version}`
 MOTD:
 ```{hostname}```
-""".lstrip().strip()
+"""
 
 #run command
 run_output = """
@@ -88,7 +90,7 @@ Command output:
 ```
 {output}
 ```
-""".lstrip().strip()
+"""
 
 #--------------------------------------------
 

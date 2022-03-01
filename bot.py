@@ -36,7 +36,15 @@ class BotClient(commands.Bot):
         stats = self.query.basic_stat()
         new_status_message = config.custom_status_message.format(**stats)
         if not new_status_message == self.status_message:
-            await self.change_presence(activity=discord.Game(new_status_message))
+            activities = {
+                "playing": discord.Game(new_status_message),
+                "streaming": discord.Activity(type=discord.ActivityType.streaming, name=new_status_message),
+                "listening": discord.Activity(type=discord.ActivityType.listening, name=new_status_message),
+                "watching": discord.Activity(type=discord.ActivityType.watching, name=new_status_message),
+                "competing": discord.Activity(type=discord.ActivityType.competing, name=new_status_message)
+            }
+            activity = activities[config.custom_status_type]
+            await self.change_presence(activity=activity)
         self.status_message = new_status_message
         
     @status_thread_function.before_loop
