@@ -11,6 +11,7 @@ log_file = server_dir + "/logs/latest.log"
 #often server plugins will use "[PluginName] message" to log messages
 #this results in false positives for the /say detection,
 #since /say results in the output [player] message
+
 #anything put in this list will not trigger the /say detection
 blacklisted_users = ["Dynmap"] #"[Dynmap] something" will not trigger the /say detection
 
@@ -26,11 +27,19 @@ discord_nickname = "Chatlink"
 #discord bot config
 bot_token = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 bot_channel_id = 776294866413682718 #channel id of the channel you want to link to the mc chat
+command_prefix = "!" #command prefix for the bot
+
 discord_to_mc_message = "§b[Discord]§r {user} » {message}" #message from discord that is sent to the mc chat
 discord_ignore_bots = True #ignore bots in linked channel?
-command_prefix = "!" #command prefix for the bot
-console_channel = False #enable/disable the console channel
+
+console_channel = True #enable/disable the console channel
 console_channel_id = 947707312787841064 #channel id of the optional console channel
+
+#set a custom status
+#valid placeholders are motd, gametype, map, numplayers, hostport, hostip
+custom_status = True
+custom_status_message = "with {numplayers}/{maxplayers} players" #will display as "playing with x/y players"
+
 
 #rcon config
 #you can find the port and password of the rcon server in server.properties
@@ -38,7 +47,7 @@ rcon_address = "127.0.0.1:25575"
 rcon_password = "password"
 
 #query config
-#again, you can find the address and port in server.properties
+#you can find the address and port in server.properties
 query_address = "127.0.0.1:25565"
 
 #--------------------------------------------
@@ -47,6 +56,7 @@ query_address = "127.0.0.1:25565"
 #these are the outputs of the commands that are run from discord
 
 #help command:
+#{pre} is a placeholder for the prefix
 help_message = """
 **Command List:**
  - `{pre}players` - Lists the online players
@@ -60,13 +70,16 @@ player_list_heading = "**{players}/{maxplayers} players connected:**"
 player_list_items = " - {player}"
 
 #stats command
+#valid placeholders are hostname, gametype, game_id, version, plugins,
+#map, numplayers, maxplayers, hostport, hostip
 stats_output = """
 **Server Stats:**
-Players: `{players}/{maxplayers}`
-Map name: `{mapname}`
-Port: `{server_port}`
+Players: `{numplayers}/{maxplayers}`
+Map name: `{map}`
+Port: `{hostport}`
+Version: `{version}`
 MOTD:
-```{motd}```
+```{hostname}```
 """.lstrip().strip()
 
 #run command
