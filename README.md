@@ -10,6 +10,7 @@
  - Supports two way communication via the Minecraft RCON protocol.
  - Has commands to get player count and misc stats.
  - Allows you to run server commands through Discord.
+ - Has a customizable status that can display stats.
 
 ### Webhook Setup:
 1. Cd into your server's directory and clone this repository.
