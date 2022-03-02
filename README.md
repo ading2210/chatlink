@@ -26,7 +26,7 @@
 5. OPTIONAL: Link a channel to the server console by setting `console_channel` to True and setting the ID of the channel in config.py
 6. Run `python3 main.py` to start the program.
 
-###: Bash Script:
+### Bash Script:
 Use this script to start Chatlink and have it run in the background. Needs GNU Screen to be installed (`sudo apt install screen` on Debian systems). 
 ```
 #!/bin/bash
