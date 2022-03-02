@@ -83,7 +83,22 @@ class BotClient(commands.Bot):
             return
         if message.channel.id == config.bot_channel_id:
             nickname = message.author.display_name
-            message_formatted = config.discord_to_mc_message.format(message=message.content, user=nickname).replace("'", r"\'").replace('"', r'\"')
+            placeholders = {
+                "user": message.author.display_name,
+                "message": message.content,
+                "reply_user": None,
+                "reply_message": None
+            }
+            
+            if not message.reference == None:
+                reply = message.reference.resolved
+                reply_member = await message.guild.fetch_member(reply.author.id)
+                placeholders["reply_user"] = reply_member.display_name
+                placeholders["reply_message"] = reply.content
+                message_formatted = config.discord_reply_message.format(**placeholders).replace("'", r"\'").replace('"', r'\"')
+            else:
+                message_formatted = config.discord_to_mc_message.format(**placeholders).replace("'", r"\'").replace('"', r'\"')
+                
             command = 'tellraw @a "{msg}"'.format(msg=message_formatted)
             try:
                 self.rcon.send_cmd(command)

@@ -12,12 +12,12 @@ class Commands(commands.Cog, name="commands module"):
     @commands.command(name="players")
     async def players(self, ctx):
         stats = self.client.query.full_stat()
-        message_base = config.player_list_heading.format(
-            players=stats["numplayers"], maxplayers=stats["maxplayers"])
-        
-        for player in stats["players"]:
-            message_base = message_base+"\n"+config.player_list_items.format(player=player)
-        await ctx.send(message_base)
+        players = stats.pop("players")
+        players_list = []
+        for player in players:
+            players_list.append(config.player_list_item.format(player=player))
+        message = config.player_list_message.format(items="\n".join(players_list), **stats)
+        await ctx.send(message)
 
     #command to get some misc server stats
     @commands.command(name="stats")

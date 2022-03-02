@@ -29,15 +29,18 @@ bot_token = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 bot_channel_id = 776294866413682718 #channel id of the channel you want to link to the mc chat
 command_prefix = "!" #command prefix for the bot
 
-discord_to_mc_message = "§b[Discord]§r {user} » {message}" #message from discord that is sent to the mc chat
+#messages from discord that are sent to the mc chat
+#valid placholders: user, message, reply_user, reply_message
+discord_to_mc_message = "§b[Discord]§r {user} » {message}" 
+discord_reply_message = "§b[Discord]§r {user} (replying to {reply_user}) » {message}"
 discord_ignore_bots = True #ignore bots in linked channel?
 
 console_channel = True #enable/disable the console channel
 console_channel_id = 947707312787841064 #channel id of the optional console channel
 
 #set a custom status
-#valid placeholders are motd, gametype, map, numplayers, hostport, hostip
-#valid status types are playing, streaming, listening, watching, and competing
+#valid placeholders: motd, gametype, map, numplayers, maxplayers, hostport, hostip
+#valid status types: playing, streaming, listening, watching, and competing
 custom_status = True
 custom_status_type = "playing"
 custom_status_message = "with {numplayers}/{maxplayers} players" #will display as "playing with x/y players"
@@ -68,11 +71,16 @@ help_message = """
 """
 
 #player list commands
-player_list_heading = "**{players}/{maxplayers} players connected:**"
-player_list_items = " - {player}"
+#valid placeholders: motd, gametype, map, numplayers, maxplayers, hostport, hostip
+player_list_message = """
+**{numplayers}/{maxplayers} players connected:**
+{items}
+"""
+#valid placeholders: player
+player_list_item = " - {player}"
 
 #stats command
-#valid placeholders are hostname, gametype, game_id, version, plugins,
+#valid placeholders: hostname, gametype, game_id, version, plugins,
 #map, numplayers, maxplayers, hostport, hostip
 stats_output = """
 **Server Stats:**
@@ -85,6 +93,7 @@ MOTD:
 """
 
 #run command
+#valid placeholders: output
 run_output = """
 Command output:
 ```
@@ -98,23 +107,28 @@ Command output:
 #these are the messages that are displayed in discord
 
 #chat messages
+#valid placeholders: player, chatmsg
 player_message = "{player} » {chatmsg}"
 slash_say_message = "[{player}] » {chatmsg}"
 
 #player join/leave messages
+#valid placeholders: player
 player_join_message = "**{player} joined the game**"
 player_leave_message = "**{player} left the game**"
 
 #server start/stop messages
+#valid placeholders: [none]
 server_start_message = "**:white_check_mark: Server has started**"
 server_stop_message = "**:octagonal_sign: Server has stopped**"
 
 #advancement get messages
+#valid placeholders: players
 advancement_message = "**{player} has made the advancement [{advancement}]**"
 goal_message = "**{player} has reached the goal [{advancement}]**"
 challenge_message = "**{player} has completed the challenge [{advancement}]**"
 
 #death messages
+#valid placeholders: chatmsg
 death_message = "{deathmsg}"
 
 #===========================================
