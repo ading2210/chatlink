@@ -3,6 +3,7 @@ import discord
 from discord.ext import commands
 import config
 import textwrap
+import struct
 
 class Commands(commands.Cog, name="commands module"):
     def __init__(self, client):
@@ -38,7 +39,7 @@ class Commands(commands.Cog, name="commands module"):
         cmd = ctx.message.content.replace(ctx.prefix + "run", "", 1).lstrip()
         try:
             response = self.client.rcon.send_cmd(cmd)
-        except (BrokenPipeError, ConnectionRefusedError) as e:
+        except (BrokenPipeError, ConnectionRefusedError, struct.error) as e:
             #error handling in case the server restarts
             print("Attempting to reconnect to the RCON server...")
             try:

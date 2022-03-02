@@ -102,7 +102,7 @@ class BotClient(commands.Bot):
             command = 'tellraw @a "{msg}"'.format(msg=message_formatted)
             try:
                 self.rcon.send_cmd(command)
-            except (BrokenPipeError, struct.error) as e:
+            except (BrokenPipeError, ConnectionRefusedError, struct.error) as e:
                 #error handling in case the server restarts
                 print("Attempting to reconnect to the RCON server...")
                 try:
