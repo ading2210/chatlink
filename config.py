@@ -53,7 +53,12 @@ rcon_password = "password"
 
 #query config
 #you can find the address and port in server.properties
+use_query = False #use the query protocol, which is backwards compatible to beta 1.9, but must be explicitly enabled
+#if this is false, then it will only work for versions 1.7 and up
 query_address = "127.0.0.1:25565"
+
+#ping config
+server_address = "127.0.0.1:25565"
 
 #--------------------------------------------
 
@@ -67,6 +72,7 @@ help_message = """
  - `{pre}players` - Lists the online players
  - `{pre}stats` - Gets various stats about the server
  - `{pre}run [cmd]` - Run a command in the server (only available to users with access to the configured server console channel)
+ - `!motd (address) (port)` - Displays a server MOTD as an image (only works on servers 1.7+).
  - `{pre}help` - Shows this message
 """
 
@@ -82,7 +88,7 @@ player_list_item = " - {player}"
 #stats command
 #valid placeholders: hostname, gametype, game_id, version, plugins,
 #map, numplayers, maxplayers, hostport, hostip
-stats_output = """
+stats_output_query = """
 **Server Stats:**
 Players: `{numplayers}/{maxplayers}`
 Map name: `{map}`
@@ -100,6 +106,15 @@ Command output:
 {output}
 ```
 """
+
+#motd command
+#no placeholders
+motd_output = """
+**Server MOTD:**
+"""
+#name of the server
+motd_title = "SMP Server"
+bad_ip_output = "Invalid IP address!"
 
 #--------------------------------------------
 

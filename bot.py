@@ -8,7 +8,7 @@ import time
 import chatlink
 import config
 from discord.ext import commands, tasks
-from utils import rcon, query
+from utils import rcon, query, ping
 
 class BotClient(commands.Bot):
     def __init__(self, *args, **kwargs):
@@ -23,9 +23,13 @@ class BotClient(commands.Bot):
         self.query = query.Query(self.query_address)
 
         rcon_split = config.rcon_address.split(":")
-        rcon_ip = rcon_split[0]
+        rcon_address = rcon_split[0]
         rcon_port = int(rcon_split[1])
-        self.rcon = rcon.RCON(rcon_ip, rcon_port, config.rcon_password)
+        self.rcon = rcon.RCON(rcon_address, rcon_port, config.rcon_password)
+
+        server_address_split = config.server_address.split(":")
+        server_port = int(server_address_split[1])
+        self.server_address = (server_address_split[0], server_port)
 
         if config.custom_status == True:
             print("Custom Discord status is enabled.")
@@ -33,7 +37,12 @@ class BotClient(commands.Bot):
 
     @discord.ext.tasks.loop(seconds=30)
     async def status_thread_function(self):
-        stats = self.query.basic_stat()
+        if config.use_query == True:
+            stats = self.query.full_stat()
+            stats["protocol_version"] = "Unknown"
+        else:
+            pinger = ping.Pinger(self.server_address)
+            stats = pinger.ping_converted()
         new_status_message = config.custom_status_message.format(**stats)
         if not new_status_message == self.status_message:
             activities = {

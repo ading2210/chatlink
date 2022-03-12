@@ -12,6 +12,7 @@
  - Has commands to get player count and misc stats.
  - Allows you to run server commands through Discord.
  - Has a customizable status that can display stats.
+ - Can display the server MOTD as an image (will not work for 1.6 and below).
 
 ### Webhook Setup:
 1. Cd into your server's directory and clone this repository.
@@ -41,6 +42,7 @@ Here, ! is used as the prefix, but this can be changed.
  - `!players` - Lists the online players
  - `!stats` - Gets various stats about the server
  - `!run [cmd]` - Run a command in the server (only available to users with access to the configured server console channel)
+ - `!motd (address) (port)` - Displays a server MOTD as an image.
  - `!help` - Shows a help message
 
 Note: This has only been tested on Linux.

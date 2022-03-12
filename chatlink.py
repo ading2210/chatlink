@@ -2,7 +2,7 @@ import time
 import os
 import requests
 import re
-from utils import deathmessages
+from utils import extractor
 import config
 
 class Chatlink():
@@ -18,7 +18,7 @@ class Chatlink():
     #compile regex patterns
     def compile_regex(self):
         print("Fetching a list of death messages...")
-        death_messages = deathmessages.get_death_messages()
+        death_messages = extractor.get_death_messages()
         death_messages_regex = []
         placeholder1 = re.escape("%1$s")
         placeholder2 = re.escape("%2$s")

@@ -1,9 +1,10 @@
-from utils import query, rcon
+from utils import query, rcon, motd_renderer, ping
 import discord
 from discord.ext import commands
 import config
 import textwrap
 import struct
+from io import BytesIO
 
 class Commands(commands.Cog, name="commands module"):
     def __init__(self, client):
@@ -12,8 +13,14 @@ class Commands(commands.Cog, name="commands module"):
     #command to list players
     @commands.command(name="players")
     async def players(self, ctx):
-        stats = self.client.query.full_stat()
-        players = stats.pop("players")
+        if config.use_query == True:
+            stats = self.client.query.full_stat()
+            players = stats.pop("players")
+            stats["protocol_version"] = "Unknown"
+        else:
+            pinger = ping.Pinger(self.client.server_address)
+            stats = pinger.ping_converted()
+            players = stats.pop("players")
         players_list = []
         for player in players:
             players_list.append(config.player_list_item.format(player=player))
@@ -23,9 +30,14 @@ class Commands(commands.Cog, name="commands module"):
     #command to get some misc server stats
     @commands.command(name="stats")
     async def stats(self, ctx):
-        stats = self.client.query.full_stat()
+        if config.use_query == True:
+            stats = self.client.query.full_stat()
+            stats["protocol_version"] = "Unknown"
+        else:
+            pinger = ping.Pinger(self.client.server_address)
+            stats = pinger.ping_converted()
         players = stats.pop("players")
-        response = config.stats_output.format(**stats).lstrip().strip()
+        response = config.stats_output_query.format(**stats).lstrip().strip()
         await ctx.send(response)
 
     #command to run a command in mc
@@ -56,6 +68,31 @@ class Commands(commands.Cog, name="commands module"):
         
         await ctx.send(msg)
 
+    #command to render the server motd
+    @commands.command(name="motd")
+    async def get_motd(self, ctx, address="127.0.0.1", port=None):
+        if port == None:
+            port = self.client.server_address[1]
+        if address.startswith("192.") or address=="localhost" or address=="0.0.0.0":
+            await ctx.send("Invalid IP address!")
+            return
+        if address == "127.0.0.1" and not port==self.client.server_address[1]:
+            await ctx.send(config.bad_ip_output)
+            return
+        if address == "127.0.0.1":
+            title = config.motd_title
+        else:
+            title = address+":"+str(port)
+        response = config.motd_output.strip().lstrip()
+        renderer = motd_renderer.MOTDRenderer()
+        image = renderer.get_full_image(title=title, address=(address, int(port)))
+
+        with BytesIO() as output:
+            image.save(output, format="PNG")
+            output.seek(0)
+            await ctx.send(file=discord.File(fp=output, filename="motd.png"), content=response)
+
+    #help command
     @commands.command(name="help")
     async def help(self, ctx):
-        await ctx.send(config.help_message.format(pre=command_prefix).lstrip().strip())
+        await ctx.send(config.help_message.format(pre=config.command_prefix).lstrip().strip())
