@@ -2,12 +2,8 @@ import requests
 import json
 import sys
 import os
-#import config
+import config
 from zipfile import ZipFile
-class Config:
-    def __init__(self):
-        self.version = "1.16.5"
-config = Config()
 
 #downloads a file
 def download(url, path):
