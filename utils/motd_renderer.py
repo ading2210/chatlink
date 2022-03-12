@@ -1,7 +1,7 @@
 from io import BytesIO
 import os, base64, random, json, re, socket
 from PIL import Image, ImageFont, ImageDraw, ImageEnhance
-from utils import ping
+from utils import ping, extractor
 
 class MCFont:
     def __init__(self, path):
@@ -311,7 +311,6 @@ class MOTDRenderer:
         else:
             char_img, unicode, size = char_obj
         start = size[2]
-        #print("char: ", char, "size", size, unicode)
         drawer = ImageDraw.Draw(img)
         if unicode == True:
             scale = 1
@@ -378,7 +377,7 @@ class MOTDRenderer:
                     self.draw_char(image, (x+line_offset, y+y_offset), **char, unicode=unicode)
                     line_offset += char_size
                 else:
-                    print("skipping rendering of character")
+                    pass
                 unicode = None
             y += 18
 
@@ -397,8 +396,8 @@ class MOTDRenderer:
                 image_base64 = stats["favicon"].replace("data:image/png;base64,", "", 1)
                 image_data = BytesIO(base64.b64decode(image_base64, validate=True))
                 thumbnail = Image.open(image_data)
-        except socket.gaierror as e:
-            print(e)
+        except socket.gaierror:
+            pass
         finally:
             if stats == None or not "favicon" in stats:
                 thumbnail = Image.open(self.extracted_dir+"/assets/minecraft/textures/misc/unknown_server.png")
@@ -408,7 +407,7 @@ class MOTDRenderer:
     #renders what a server would look like in the mc server list
     #can also imitate the "force unicode font" option
     #returns a PIL image object
-    def get_full_image(self, title="A Minecraft Server", address=("127.0.0.1", 25565), force_unicode=False):
+    def get_full_image(self, title="A Minecraft Server", address=("127.0.0.1", 25565), force_unicode=False, status=None):
         stats = None
         try:
             stats = self.ping_server(address)
@@ -437,18 +436,19 @@ class MOTDRenderer:
         self.draw_text(image, (74, 6), title_parsed, force_unicode=force_unicode)
         self.draw_text(image, (74, 28), motd_parsed, force_unicode=force_unicode)
 
-        if stats == None:
-            status = 5
-        elif stats["ping"] > 1000:
-            status = 4
-        elif stats["ping"] > 500:
-            status = 3
-        elif stats["ping"] > 250:
-            status = 2
-        elif stats["ping"] > 100:
-            status = 1
-        else:
-            status = 0
+        if status == None:
+            if stats == None:
+                status = 5
+            elif stats["ping"] > 1000:
+                status = 4
+            elif stats["ping"] > 500:
+                status = 3
+            elif stats["ping"] > 250:
+                status = 2
+            elif stats["ping"] > 100:
+                status = 1
+            else:
+                status = 0
         connection_icon = self.get_connection_icon(status)
         connection_icon = connection_icon.resize((connection_icon.size[0]*2, connection_icon.size[1]*2), Image.NEAREST)
         image.paste(connection_icon, (584, 6), mask=connection_icon)
@@ -461,8 +461,3 @@ class MOTDRenderer:
             self.draw_text(image, (player_count_start, 6), player_count_parsed, force_unicode=force_unicode)
 
         return image
-
-if __name__ == "__main__":
-    renderer = MOTDRenderer()
-    image = renderer.get_full_image(title="Hypixel", address=("mc.hypixel.net", 25565))
-    image.save("/tmp/img.png", "PNG")

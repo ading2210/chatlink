@@ -115,12 +115,3 @@ class Query:
         stats["players"] = players
                 
         return stats
-
-if __name__ == "__main__":
-    
-    address = ("127.0.0.1", 25565)
-
-    query = Query(address)
-    token = query.get_challenge_token()
-    stats = query.full_stat(token)
-    print(stats)
