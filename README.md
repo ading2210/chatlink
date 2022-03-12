@@ -21,11 +21,12 @@
 
 ### Bot Setup:
 1. Cd into your server's directory and clone this repository.
-2. Open server.properties and enable the RCON protocol and set a password. Also, enable the query protocol in the same file.
-3. Edit config.py and put in your bot token and the ID of the channel to link to MC. Edit the MC version and the location of the MC server (needs to be and absolute path). 
-4. In config.py, change the password for the RCON server to the one you set in step 2.
-5. OPTIONAL: Link a channel to the server console by setting `console_channel` to True and setting the ID of the channel in config.py
-6. Run `python3 main.py` to start the program.
+2. Install py-cord and Pillow: `pip3 intall py-cord Pillow`
+3. Open server.properties and enable the RCON protocol and set a password. Also, enable the query protocol in the same file.
+4. Edit config.py and put in your bot token and the ID of the channel to link to MC. Edit the MC version and the location of the MC server (needs to be and absolute path). 
+5. In config.py, change the password for the RCON server to the one you set in step 2.
+6. OPTIONAL: Link a channel to the server console by setting `console_channel` to True and setting the ID of the channel in config.py
+7. Run `python3 main.py` to start the program.
 
 ### Bash Script:
 Use this script to start Chatlink and have it run in the background. Needs GNU Screen to be installed (`sudo apt install screen` on Debian systems). 
