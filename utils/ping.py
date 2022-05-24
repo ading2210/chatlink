@@ -107,7 +107,7 @@ class Pinger:
     def ping_converted(self):
         stats_ping = self.ping()
         players = []
-        if "sample" in stats_ping["players"]:
+        if "players" in stats_ping and "sample" in stats_ping["players"]:
             for player in stats_ping["players"]["sample"]:
                 players.append(player["name"])
         stats = {

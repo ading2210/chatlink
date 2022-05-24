@@ -4,41 +4,124 @@ from discord.ext import commands
 import config
 import textwrap
 import struct
+import socket
 from io import BytesIO
 
+def embed_builder(embed_dict, placeholders):
+    for item in embed_dict:
+        if type(embed_dict[item]) is str:
+            embed_dict[item] = embed_dict[item].format(**placeholders)
+    embed = discord.Embed(**embed_dict)
+    if "fields" in embed_dict:
+        for field in embed_dict["fields"]:
+            field["value"] = field["value"].format(**placeholders)
+            embed.add_field(**field)
+    if not embed_dict["footer"] == None:
+        embed.set_footer(text=embed_dict["footer"])
+    return embed
+        
 class Commands(commands.Cog, name="commands module"):
     def __init__(self, client):
         self.client = client
 
-    #command to list players
-    @commands.command(name="players")
-    async def players(self, ctx):
+    def get_stats(self):
         if config.use_query == True:
             stats = self.client.query.full_stat()
             players = stats.pop("players")
             stats["protocol_version"] = "Unknown"
         else:
-            pinger = ping.Pinger(self.client.server_address)
-            stats = pinger.ping_converted()
+            stats = self.client.pinger.ping_converted()
             players = stats.pop("players")
+            
+        if len(players) == 0 or players[0] == "":
+            players = []
+        return stats, players
+
+    #command to list players
+    @commands.command(name="players")
+    async def players(self, ctx):
+        try:
+            stats, players = self.get_stats()
+        except socket.timeout:
+            await ctx.send(config.timeout_message)
+            return
+        except ConnectionRefusedError:
+            await ctx.send(config.connection_refused_message)
+            return
+        
         players_list = []
         for player in players:
             players_list.append(config.player_list_item.format(player=player))
-        message = config.player_list_message.format(items="\n".join(players_list), **stats)
-        await ctx.send(message)
+        if len(players) > 0:
+            stats["items"] = items="\n".join(players_list)
+        else:
+            stats["items"] = chr(173)
+            
+        message = {}
+        if config.player_list_use_embed:
+            embed = embed_builder(config.player_list_embed, stats)
+            message["embed"] = embed
+        else:
+            response = config.player_list_message.format(**stats)
+            message["content"] = response
+
+        if config.thumbnail_in_player_list and config.player_list_use_embed:
+            message["files"] = []
+            renderer = motd_renderer.MOTDRenderer()
+            ip, port = config.server_address.split(":")
+            thumbnail = renderer.get_thumbnail(address=(ip, int(port)))
+            with BytesIO() as thumbnail_output:
+                thumbnail.save(thumbnail_output, format="PNG")
+                thumbnail_output.seek(0)
+                file = discord.File(fp=thumbnail_output, filename="thumbnail.png")
+                if config.player_list_use_embed:
+                    message["embed"].set_thumbnail(url="attachment://thumbnail.png")
+                message["files"].append(file)
+            
+        await ctx.send(**message)
 
     #command to get some misc server stats
     @commands.command(name="stats")
     async def stats(self, ctx):
-        if config.use_query == True:
-            stats = self.client.query.full_stat()
-            stats["protocol_version"] = "Unknown"
+        try:
+            stats, players = self.get_stats()
+        except socket.timeout:
+            await ctx.send(config.timeout_message)
+            return
+        except ConnectionRefusedError:
+            await ctx.send(config.connection_refused_message)
+            return
+        message = {}
+        if config.stats_use_embed:
+            embed = embed_builder(config.stats_output_embed, stats)
+            message["embed"] = embed
         else:
-            pinger = ping.Pinger(self.client.server_address)
-            stats = pinger.ping_converted()
-        players = stats.pop("players")
-        response = config.stats_output_query.format(**stats).lstrip().strip()
-        await ctx.send(response)
+            response = config.stats_output_query.format(**stats).lstrip().strip()
+            message["content"] = response
+
+        renderer = motd_renderer.MOTDRenderer()
+        ip, port = config.server_address.split(":")
+        message["files"] = []
+        if config.motd_image_in_stats:
+            image = renderer.get_full_image(title=config.motd_title, address=(ip, int(port)))
+            with BytesIO() as output:
+                image.save(output, format="PNG")
+                output.seek(0)
+                file = discord.File(fp=output, filename="motd.png")
+                if config.stats_use_embed:
+                    message["embed"].set_image(url="attachment://motd.png")
+                message["files"].append(file)
+                
+        if config.stats_use_embed and config.thumbnail_in_stats:
+            thumbnail = renderer.get_thumbnail(address=(ip, int(port)))
+            with BytesIO() as thumbnail_output:
+                thumbnail.save(thumbnail_output, format="PNG")
+                thumbnail_output.seek(0)
+                file = discord.File(fp=thumbnail_output, filename="thumbnail.png")
+                message["embed"].set_thumbnail(url="attachment://thumbnail.png")
+                message["files"].append(file)
+            
+        await ctx.send(**message)
 
     #command to run a command in mc
     @commands.command(name="run")
@@ -74,25 +157,56 @@ class Commands(commands.Cog, name="commands module"):
         if port == None:
             port = self.client.server_address[1]
         if address.startswith("192.") or address=="localhost" or address=="0.0.0.0":
-            await ctx.send("Invalid IP address!")
+            await ctx.send(config.motd_invalid_ip_message)
             return
         if address == "127.0.0.1" and not port==self.client.server_address[1]:
-            await ctx.send(config.bad_ip_output)
+            await ctx.send(config.motd_invalid_ip_message)
             return
         if address == "127.0.0.1":
             title = config.motd_title
         else:
             title = address+":"+str(port)
-        response = config.motd_output.strip().lstrip()
-        renderer = motd_renderer.MOTDRenderer()
-        image = renderer.get_full_image(title=title, address=(address, int(port)))
 
+        message_old = await ctx.send(config.motd_pinging_message)
+
+        message = {}
+        if config.motd_use_embed:
+            message["embed"] = embed_builder(config.motd_embed, {})
+        else:
+            message["content"] = config.motd_message.strip().lstrip()
+
+        renderer = motd_renderer.MOTDRenderer()
+        image = renderer.get_full_image(title=title, address=(address, port))
         with BytesIO() as output:
             image.save(output, format="PNG")
             output.seek(0)
-            await ctx.send(file=discord.File(fp=output, filename="motd.png"), content=response)
+            message["file"] = discord.File(fp=output, filename="motd.png")
+            if config.motd_use_embed:
+                message["embed"].set_image(url="attachment://motd.png")
+
+        await ctx.send(**message)
+        await message_old.delete()
 
     #help command
     @commands.command(name="help")
     async def help(self, ctx):
-        await ctx.send(config.help_message.format(pre=config.command_prefix).lstrip().strip())
+        message = {}
+        if config.help_use_embed:
+            message["embed"] = embed_builder(config.help_output_embed, {})
+        else:
+            await ctx.send(config.help_message.lstrip().strip())
+            return
+        
+        if config.thumbnail_in_help:
+            renderer = motd_renderer.MOTDRenderer()
+            ip, port = config.server_address.split(":")
+            message["files"] = []
+            thumbnail = renderer.get_thumbnail(address=(ip, int(port)))
+            with BytesIO() as thumbnail_output:
+                thumbnail.save(thumbnail_output, format="PNG")
+                thumbnail_output.seek(0)
+                file = discord.File(fp=thumbnail_output, filename="thumbnail.png")
+                message["embed"].set_thumbnail(url="attachment://thumbnail.png")
+                message["files"].append(file)
+        await ctx.send(**message)
+            
