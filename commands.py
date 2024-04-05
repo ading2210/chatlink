@@ -8,10 +8,16 @@ import socket
 from io import BytesIO
 
 def embed_builder(embed_dict, placeholders):
+    footer = ""
     for item in embed_dict:
         if type(embed_dict[item]) is str:
             embed_dict[item] = embed_dict[item].format(**placeholders)
-    embed = discord.Embed(**embed_dict)
+    
+    embed_kwargs = {**embed_dict}
+    embed_kwargs.pop("fields", None)
+    embed_kwargs.pop("footer", None)
+    embed = discord.Embed(**embed_kwargs)
+
     if "fields" in embed_dict:
         for field in embed_dict["fields"]:
             field["value"] = field["value"].format(**placeholders)

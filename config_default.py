@@ -1,7 +1,7 @@
 #config (edit this):
 #============================================
 #general config:
-version = "1.16.5"
+version = "1.19.4"
 #location of the mc server
 server_dir = "/home/allen/smp/"
 
@@ -76,22 +76,22 @@ help_use_embed = True #use embeds?
 
 #message to send if embeds are disabled
 help_message = """**Command List:**
- - `{pre}players` - Lists the online players
- - `{pre}stats` - Gets various stats about the server
- - `{pre}run [cmd]` - Run a command in the server console
- - `!motd (address) (port)` - Displays a server MOTD as an image.
- - `{pre}help` - Shows this message
+- `{pre}players` - Lists the online players
+- `{pre}stats` - Gets various stats about the server
+- `{pre}run [cmd]` - Run a command in the server console
+- `!motd (address) (port)` - Displays a server MOTD as an image.
+- `{pre}help` - Shows this message
 
 Source code: <https://github.com/ading2210/chatlink>
 """.format(pre=command_prefix)
 
 #will only be used for the embed
 command_list = """
- - `{pre}players` - Lists the online players
- - `{pre}stats` - Gets various stats about the server
- - `{pre}run [cmd]` - Run a command in the server console
- - `!motd (address) (port)` - Displays a server MOTD as an image.
- - `{pre}help` - Shows this message
+- `{pre}players` - Lists the online players
+- `{pre}stats` - Gets various stats about the server
+- `{pre}run [cmd]` - Run a command in the server console
+- `!motd (address) (port)` - Displays a server MOTD as an image.
+- `{pre}help` - Shows this message
 """.format(pre=command_prefix)
 
 #the embed to send, if enabled
@@ -116,7 +116,7 @@ player_list_message = """
 {items}
 """
 #valid placeholders: player
-player_list_item = " - {player}"
+player_list_item = "- {player}"
 
 #the embed to send, if enabled
 player_list_embed = {
