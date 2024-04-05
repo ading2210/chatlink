@@ -1,0 +1,6 @@
+__pycache__/
+.venv
+
+/config.py
+/utils/minecraft
+/utils/*.json

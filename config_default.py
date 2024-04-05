@@ -3,7 +3,7 @@
 #general config:
 version = "1.16.5"
 #location of the mc server
-server_dir = "/home/allen/smp3/"
+server_dir = "/home/allen/smp/"
 
 #these defaults shouldn't need to be changed
 log_file = server_dir + "/logs/latest.log"
@@ -25,8 +25,8 @@ discord_nickname = "Chatlink"
 #--------------------------------------------
 
 #discord bot config
-bot_token = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-bot_channel_id = 776294866413682718 #channel id of the channel you want to link to the mc chat
+bot_token = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+bot_channel_id = 99999999999999999 #channel id of the channel you want to link to the mc chat
 command_prefix = "!" #command prefix for the bot
 
 #messages from discord that are sent to the mc chat
@@ -35,8 +35,8 @@ discord_to_mc_message = "§b[Discord]§r {user} » {message}"
 discord_reply_message = "§b[Discord]§r {user} (replying to {reply_user}) » {message}"
 discord_ignore_bots = True #ignore bots in linked channel?
 
-console_channel = True #enable/disable the console channel
-console_channel_id = 947707312787841064 #channel id of the optional console channel
+console_channel = False #enable/disable the console channel
+console_channel_id = 99999999999999999 #channel id of the optional console channel
 
 #set a custom status
 #valid placeholders: motd, gametype, map, numplayers, maxplayers, hostport, hostip
@@ -153,7 +153,7 @@ MOTD:
 #the embed to send, if enabled
 stats_output_embed = {
     "title": "**Server Stats:**",
-    "footer": "Server IP: newsmp.mine.bz:{hostport}",
+    "footer": "Server IP: example.com:{hostport}",
     "color": 0x3CB371,
     "fields": [
         {

@@ -31,10 +31,6 @@ class BotClient(commands.Bot):
         server_port = int(server_address_split[1])
         self.server_address = (server_address_split[0], server_port)
 
-        if config.custom_status == True:
-            print("Custom Discord status is enabled.")
-            self.status_thread_function.start()
-
     @discord.ext.tasks.loop(seconds=30)
     async def status_thread_function(self):
         if config.use_query == True:
@@ -79,6 +75,10 @@ class BotClient(commands.Bot):
             console_channel = self.get_channel(config.console_channel_id)
             print("Console linked to channel #{channel} ({channelid})"
                   .format(channel=console_channel.name, channelid=console_channel.id))
+
+        if config.custom_status == True:
+            print("Custom Discord status is enabled.")
+            self.status_thread_function.start()
         
     #checks for messages in the discord channel
     async def on_message(self, message):
